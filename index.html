@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="iShell OS Simulator"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>iShell OS Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class', // or 'media' or 'class'
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Verdana', 'Arial', 'sans-serif'],
+              serif: ['Times New Roman', 'serif'],
+              mono: ['Courier New', 'monospace'],
+            },
+            colors: {
+              // Theme colors - will be dynamically applied via classes like bg-blue-500, text-orange-500 etc.
+              // It's better to let Tailwind handle the full palette and use specific classes.
+              // Custom theme colors can be defined if absolutely necessary,
+              // but the current approach uses existing Tailwind colors based on settings.
+            },
+            textShadow: {
+              sm: '0 1px 2px var(--tw-shadow-color, rgba(0,0,0,0.5))',
+              DEFAULT: '0 2px 4px var(--tw-shadow-color, rgba(0,0,0,0.5))',
+              lg: '0 8px 16px var(--tw-shadow-color, rgba(0,0,0,0.5))',
+            },
+          },
+        },
+        plugins: [
+          function({ addUtilities, theme, e }) {
+            const textShadowUtilities = {};
+            const textShadows = theme('textShadow');
+            if (textShadows) {
+              for (const [key, value] of Object.entries(textShadows)) {
+                textShadowUtilities[`.text-shadow${key === 'DEFAULT' ? '' : `-${e(key)}`}`] = {
+                  textShadow: value,
+                };
+              }
+            }
+            addUtilities(textShadowUtilities, ['responsive', 'hover']);
+          },
+          require('@tailwindcss/forms'), // If any forms are complex
+          // require('tailwind-scrollbar-hide') // For scrollbar-hide utility if needed externally
+        ],
+      }
+    </script>
+    <style>
+      /* For scrollbar-hide, if not using a plugin */
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.0.1"
+  }
+}
+</script>
+</head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
+<link rel="stylesheet" href="index.css">
+<script src="index.tsx" type="module"></script>
