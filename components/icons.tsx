@@ -1,14 +1,14 @@
 
 import React from 'react';
 
-// Raw Cog Icon
-export const CogIconComponent: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => (
+// Raw Ellipsis Vertical Icon (replaces Cog Icon for Settings)
+export const EllipsisVerticalIconComponent: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-1.007 1.067-1.007h1.066c.507 0 .976.465 1.067 1.007L13.58 7.5h2.84c.569 0 1.066.428 1.182.996l.398 2.003c.03.15.03.303 0 .453l-.398 2.004c-.116.568-.613.996-1.182.996h-2.84l-.876 3.56c-.09.542-.56 1.007-1.067 1.007h-1.066c-.507 0-.976-.465-1.067-1.007l-.875-3.56H7.42c-.569 0-1.066-.428-1.182-.996l-.398-2.003c-.03-.15-.03-.303 0-.453l.398-2.004c.116-.568.613.996 1.182.996h2.84l.875-3.56zM12 15.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
   </svg>
 );
-// Keep CogIcon as the framed one for now if used elsewhere directly, or switch to CogIconComponent
-export const CogIcon: React.FC<{ className?: string }> = CogIconComponent;
+// SettingsIcon will use the EllipsisVerticalIconComponent
+export const SettingsIcon: React.FC<{ className?: string }> = EllipsisVerticalIconComponent;
 
 
 export const PlusIcon: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => (
@@ -49,9 +49,9 @@ export const Bars3BottomLeftIcon: React.FC<{ className?: string }> = ({ classNam
 
 export const WindowIconComponent: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => ( 
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
-    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-    <line x1="3" y1="9" x2="21" y2="9" />
-    <line x1="9" y1="21" x2="9" y2="9" />
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="currentColor" />
+    <line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" />
+    <line x1="9" y1="21" x2="9" y2="9" stroke="currentColor" />
   </svg>
 );
 export const WindowIcon: React.FC<{ className?: string }> = WindowIconComponent;
@@ -171,5 +171,23 @@ export const ArrowsUpDownIcon: React.FC<{ className?: string }> = ({ className =
 export const ArrowsLeftRightIcon: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h18m-4.5-13.5L21 7.5m0 0L16.5 12M21 7.5H3" />
+  </svg>
+);
+
+export const EnvelopeIconComponent: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+  </svg>
+);
+
+export const CalendarDaysIconComponent: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0H21M7.5 11.25h.008v.008H7.5v-.008zm0 3.75h.008v.008H7.5v-.008zm3.75-3.75h.008v.008h-.008v-.008zm0 3.75h.008v.008h-.008v-.008zm3.75-3.75h.008v.008h-.008v-.008zm0 3.75h.008v.008h-.008v-.008z" />
+  </svg>
+);
+
+export const ChartBarIconComponent: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
   </svg>
 );

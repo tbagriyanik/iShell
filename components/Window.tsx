@@ -25,6 +25,7 @@ const WindowComponent: React.FC<WindowProps> = ({
   const [isResizing, setIsResizing] = useState<ResizeDirection>(null);
   const [dragStartOffset, setDragStartOffset] = useState({ x: 0, y: 0 });
   const [originalWindowRect, setOriginalWindowRect] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const [showInteractionOverlay, setShowInteractionOverlay] = useState(false);
   
   const windowRef = useRef<HTMLDivElement>(null);
 
@@ -35,8 +36,8 @@ const WindowComponent: React.FC<WindowProps> = ({
   const activeRingClass = `ring-2 ring-offset-2 ${getThemeColorClass(themeColor, 'ring', '400')} ${currentBgIsLight ? 'ring-offset-stone-200 dark:ring-offset-neutral-800' : 'ring-offset-stone-800 dark:ring-offset-neutral-900'}`; 
   const inactiveRingClass = `ring-1 ${currentBgIsLight ? 'ring-black/10' : 'ring-black/20 dark:ring-white/10'}`;
 
-  const MIN_WIDTH = 200; // Increased min width slightly
-  const MIN_HEIGHT = 150; // Increased min height slightly
+  const MIN_WIDTH = 200; 
+  const MIN_HEIGHT = 150; 
   const TOP_BAR_HEIGHT = 48; 
 
   const AppSpecificIcon = APP_ICON_COMPONENT_MAP[appIconId] || APP_ICON_COMPONENT_MAP['DefaultAppIcon'];
@@ -46,6 +47,7 @@ const WindowComponent: React.FC<WindowProps> = ({
     
     onFocus(windowData.id);
     setIsDragging(true);
+    setShowInteractionOverlay(true);
     
     const rect = windowRef.current?.getBoundingClientRect();
     if (rect) {
@@ -60,6 +62,7 @@ const WindowComponent: React.FC<WindowProps> = ({
     e.stopPropagation(); 
     onFocus(windowData.id);
     setIsResizing(direction);
+    setShowInteractionOverlay(true);
     setDragStartOffset({ x: e.clientX, y: e.clientY });
     if (windowRef.current) {
       const rect = windowRef.current.getBoundingClientRect();
@@ -71,9 +74,10 @@ const WindowComponent: React.FC<WindowProps> = ({
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!windowRef.current) return;
-    e.preventDefault();
-
+    // No e.preventDefault() here, allow default for text selection if not dragging/resizing
+    
     if (isDragging) {
+      e.preventDefault();
       let newX = e.clientX - dragStartOffset.x;
       let newY = e.clientY - dragStartOffset.y;
 
@@ -87,6 +91,7 @@ const WindowComponent: React.FC<WindowProps> = ({
       windowRef.current.style.left = `${newX}px`;
       windowRef.current.style.top = `${newY}px`;
     } else if (isResizing) {
+      e.preventDefault();
       let newX = originalWindowRect.x;
       let newY = originalWindowRect.y;
       let newWidth = originalWindowRect.width;
@@ -108,8 +113,10 @@ const WindowComponent: React.FC<WindowProps> = ({
         if (newHeight === MIN_HEIGHT) newY = originalWindowRect.y + originalWindowRect.height - MIN_HEIGHT;
       }
       
-      if(newX < 0) { newWidth += newX; newX = 0; }
-      if(newY < TOP_BAR_HEIGHT) { newHeight += (newY - TOP_BAR_HEIGHT); newY = TOP_BAR_HEIGHT; }
+      if(newX < 0) { newWidth = Math.max(MIN_WIDTH, newWidth + newX); newX = 0; }
+      if(newY < TOP_BAR_HEIGHT) { newHeight = Math.max(MIN_HEIGHT, newHeight + (newY - TOP_BAR_HEIGHT)); newY = TOP_BAR_HEIGHT; }
+      
+      // Ensure window does not expand beyond viewport edges during resize
       if(newX + newWidth > window.innerWidth) newWidth = window.innerWidth - newX;
       if(newY + newHeight > window.innerHeight) newHeight = window.innerHeight - newY;
 
@@ -130,14 +137,15 @@ const WindowComponent: React.FC<WindowProps> = ({
       const newWidth = parseInt(windowRef.current.style.width, 10);
       const newHeight = parseInt(windowRef.current.style.height, 10);
 
-      if (isResizing.includes('n') || isResizing.includes('w')) {
+      if (isResizing.includes('n') || isResizing.includes('w') || isResizing.includes('nw') || isResizing.includes('ne') || isResizing.includes('sw') || isResizing.includes('se')) {
          onResizeStop(windowData.id, { width: newWidth, height: newHeight }, {x: newX, y: newY});
-      } else {
-         onResizeStop(windowData.id, { width: newWidth, height: newHeight });
+      } else { // Primarily E, W, S, N if logic was simpler
+         onResizeStop(windowData.id, { width: newWidth, height: newHeight }, {x:newX, y:newY}); // Always pass position for consistency
       }
     }
     setIsDragging(false);
     setIsResizing(null);
+    setShowInteractionOverlay(false);
     if (document.body.style.cursor !== 'default') document.body.style.cursor = 'default';
   }, [isDragging, isResizing, windowData.id, onDragStop, onResizeStop]);
 
@@ -188,6 +196,7 @@ const WindowComponent: React.FC<WindowProps> = ({
       onClick={() => onFocus(windowData.id)}
       onTouchStart={() => onFocus(windowData.id)} 
     >
+      {/* Resize Handles - Placed above title bar in DOM order but visually positioned correctly */}
       <div className={`${resizeHandleClass} top-0 left-0 w-full h-2 cursor-n-resize`} onMouseDown={(e) => handleResizeHandleMouseDown(e, 'n')}></div>
       <div className={`${resizeHandleClass} top-0 right-0 w-2 h-full cursor-e-resize`} onMouseDown={(e) => handleResizeHandleMouseDown(e, 'e')}></div>
       <div className={`${resizeHandleClass} bottom-0 left-0 w-full h-2 cursor-s-resize`} onMouseDown={(e) => handleResizeHandleMouseDown(e, 's')}></div>
@@ -198,7 +207,7 @@ const WindowComponent: React.FC<WindowProps> = ({
       <div className={`${resizeHandleClass} bottom-left-0 w-3 h-3 cursor-sw-resize bottom-0 left-0`} onMouseDown={(e) => handleResizeHandleMouseDown(e, 'sw')}></div>
       
       <div
-        className={`window-title-bar h-8 sm:h-9 ${titleBarBgClass} ${titleBarTextClass} flex items-center justify-between px-2 sm:px-2.5 cursor-grab active:cursor-grabbing select-none shrink-0 relative z-20`}
+        className={`window-title-bar h-8 sm:h-9 ${titleBarBgClass} ${titleBarTextClass} flex items-center justify-between px-2 sm:px-2.5 cursor-grab active:cursor-grabbing select-none shrink-0 relative z-20`} // Title bar on top of resize handles that are at edge
         onMouseDown={handleTitleBarMouseDown}
       >
         <div className="flex items-center space-x-1.5 sm:space-x-2 overflow-hidden">
@@ -219,6 +228,12 @@ const WindowComponent: React.FC<WindowProps> = ({
       </div>
       <div className={`flex-grow overflow-auto scrollbar-thin ${currentBgIsLight ? 'scrollbar-thumb-stone-400' : 'scrollbar-thumb-stone-600 dark:scrollbar-thumb-neutral-700'} scrollbar-track-transparent relative z-0`}>
         {children}
+        {showInteractionOverlay && (
+            <div 
+              className="absolute inset-0 z-30" // Higher z-index than content
+              style={{ cursor: document.body.style.cursor }} // Match the current drag/resize cursor
+            />
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
-import { SettingsState, DesktopApp, WindowState, ContextMenuState, LanguageOption, ContextMenuItem, ThemeColorOption, SerializableWindowState, IconArrangementOption } from './types';
+import { SettingsState, DesktopApp, WindowState, ContextMenuState, LanguageOption, ContextMenuItem, ThemeColorOption, SerializableWindowState, IconArrangementOption, BackgroundColorOption } from './types';
 import TopBar from './components/TopBar';
 import Desktop from './components/Desktop';
 import WindowComponent from './components/Window';
@@ -31,9 +31,9 @@ import {
   APP_ICON_COMPONENT_MAP, 
   RAW_APP_ICON_COMPONENTS,
   AVAILABLE_APP_ICONS,
-  getThemeColorClass,
   EXAMPLE_APP_PROMPTS,
   SYSTEM_INSTRUCTION_FOR_APP_GENERATION,
+  DESKTOP_BACKGROUND_PALETTE,
 } from './constants';
 
 let ai: GoogleGenAI | null = null;
@@ -87,7 +87,7 @@ const App: React.FC = () => {
      }
      return 10;
   });
-  const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
+  const [contextMenu, setContextMenu] = useState<Omit<ContextMenuState, 'currentBgIsLight' | 'themeColor'> | null>(null); // Removed theming props from state
   
   const [isNewAppModalOpen, setIsNewAppModalOpen] = useState(false);
   const [isEditAppModalOpen, setIsEditAppModalOpen] = useState(false);
@@ -104,6 +104,8 @@ const App: React.FC = () => {
   const [showWelcomeScreen, setShowWelcomeScreen] = useState(!currentSettings.apiKey);
   
   const texts = UI_TEXTS[currentSettings.language];
+
+  const currentBgIsLight = DESKTOP_BACKGROUND_PALETTE.find(p => p.value === currentSettings.desktopBackground)?.isLight ?? false;
 
   const generateAppContentInternal = async (appName: string, aiPrompt: string): Promise<string | null> => {
     if (!ai) {
@@ -605,8 +607,19 @@ const App: React.FC = () => {
   const closeContextMenu = useCallback(() => setContextMenu(null), []);
 
   useEffect(() => {
+    // For closing custom context menu with a left click
     document.addEventListener('click', closeContextMenu);
-    return () => document.removeEventListener('click', closeContextMenu);
+    
+    // For preventing browser's native context menu
+    const preventNativeContextMenu = (event: MouseEvent) => {
+      event.preventDefault();
+    };
+    document.addEventListener('contextmenu', preventNativeContextMenu);
+
+    return () => {
+      document.removeEventListener('click', closeContextMenu);
+      document.removeEventListener('contextmenu', preventNativeContextMenu);
+    };
   }, [closeContextMenu]);
 
   useEffect(() => {
@@ -641,6 +654,7 @@ const App: React.FC = () => {
           apiKeyPlaceholder: texts.apiKeyPlaceholder,
           saveAndContinue: texts.saveAndContinue,
         }}
+        currentBgIsLight={currentBgIsLight}
       />
     );
   }
@@ -693,6 +707,8 @@ const App: React.FC = () => {
           y={contextMenu.y}
           items={contextMenu.items}
           onClose={closeContextMenu}
+          currentBgIsLight={currentBgIsLight}
+          themeColor={currentSettings.themeColor}
         />
       )}
       {isNewAppModalOpen && (
@@ -704,6 +720,7 @@ const App: React.FC = () => {
           generationError={generationError}
           texts={texts}
           themeColor={currentSettings.themeColor}
+          currentBgIsLight={currentBgIsLight}
         />
       )}
       {isEditAppModalOpen && appToEdit && (
@@ -714,6 +731,7 @@ const App: React.FC = () => {
           onSubmit={handleUpdateApp}
           texts={texts}
           themeColor={currentSettings.themeColor}
+          currentBgIsLight={currentBgIsLight}
         />
       )}
       {confirmationModal?.isOpen && (
@@ -726,6 +744,7 @@ const App: React.FC = () => {
           themeColor={currentSettings.themeColor}
           confirmText={texts.confirm}
           cancelText={texts.cancel}
+          currentBgIsLight={currentBgIsLight}
         />
       )}
     </div>

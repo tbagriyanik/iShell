@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { WelcomeSetupScreenProps, ThemeColorOption } from '../types';
 import { getThemeColorClass } from '../constants';
-import { CogIcon } from './icons'; // Or a more generic app icon
+import { SettingsIcon } from './icons'; // Changed CogIcon to SettingsIcon
 
-const WelcomeSetupScreen: React.FC<WelcomeSetupScreenProps> = ({ onApiKeySubmit, themeColor, texts }) => {
+const WelcomeSetupScreen: React.FC<WelcomeSetupScreenProps> = ({ onApiKeySubmit, themeColor, texts, currentBgIsLight }) => {
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -18,25 +17,34 @@ const WelcomeSetupScreen: React.FC<WelcomeSetupScreenProps> = ({ onApiKeySubmit,
     onApiKeySubmit(apiKeyInput.trim());
   };
 
-  const bgColor = 'bg-slate-800'; // A neutral dark background
-  const textColor = 'text-white';
-  const cardBgColor = 'bg-slate-700';
-  const inputBgClass = 'bg-slate-600 placeholder-slate-400';
+  // Theme adaptations
+  const screenBgClass = currentBgIsLight ? 'bg-gray-100' : 'bg-slate-800';
+  const cardBgClass = currentBgIsLight ? 'bg-white' : 'bg-slate-700';
+  const textColorClass = currentBgIsLight ? 'text-neutral-800' : 'text-white';
+  const subTextColorClass = currentBgIsLight ? 'text-slate-600' : 'text-slate-300';
+  const smallSubTextColorClass = currentBgIsLight ? 'text-slate-500' : 'text-slate-400';
+  const inputBgClass = currentBgIsLight ? 'bg-gray-50' : 'bg-slate-600';
+  const inputBorderClass = currentBgIsLight ? 'border-gray-300' : 'border-slate-500';
+  const inputPlaceholderClass = currentBgIsLight ? 'placeholder-gray-400' : 'placeholder-slate-400';
+  const cardBorderClass = currentBgIsLight ? 'border-gray-200' : 'border-slate-600';
+  
   const focusRingClass = `focus:ring-${themeColor}-500`;
   const buttonBgClass = getThemeColorClass(themeColor, 'bg', '600');
   const buttonHoverBgClass = getThemeColorClass(themeColor, 'bg', '700');
+  const titleColorClass = `text-${themeColor}-${currentBgIsLight ? '600' : '400'}`;
+  const iconColorClass = `text-${themeColor}-${currentBgIsLight ? '500' : '400'}`;
+
 
   return (
-    <div className={`fixed inset-0 ${bgColor} ${textColor} flex flex-col items-center justify-center p-4 sm:p-8 z-[2000]`}>
-      <div className={`${cardBgColor} p-6 sm:p-8 rounded-xl shadow-2xl w-full max-w-md text-center border border-slate-600`}>
+    <div className={`fixed inset-0 ${screenBgClass} ${textColorClass} flex flex-col items-center justify-center p-4 sm:p-8 z-[2000]`}>
+      <div className={`${cardBgClass} p-6 sm:p-8 rounded-xl shadow-2xl w-full max-w-md text-center border ${cardBorderClass}`}>
         <div className="flex justify-center mb-4">
-          {/* You can use a generic iShell icon or CogIcon here */}
-          <CogIcon className={`w-16 h-16 text-${themeColor}-400`} />
+          <SettingsIcon className={`w-16 h-16 ${iconColorClass}`} />
         </div>
-        <h1 id="welcome-title" className={`text-2xl sm:text-3xl font-bold mb-3 text-${themeColor}-400`}>
+        <h1 id="welcome-title" className={`text-2xl sm:text-3xl font-bold mb-3 ${titleColorClass}`}>
           {texts.welcomeTitle}
         </h1>
-        <p id="welcome-message" className="text-sm sm:text-base text-slate-300 mb-6">
+        <p id="welcome-message" className={`text-sm sm:text-base ${subTextColorClass} mb-6`}>
           {texts.welcomeMessage}
         </p>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -51,13 +59,13 @@ const WelcomeSetupScreen: React.FC<WelcomeSetupScreenProps> = ({ onApiKeySubmit,
               value={apiKeyInput}
               onChange={(e) => setApiKeyInput(e.target.value)}
               required
-              className={`w-full p-3 rounded-md ${inputBgClass} ${textColor} border border-slate-500 focus:ring-2 ${focusRingClass} focus:border-${themeColor}-500 outline-none text-sm sm:text-base`}
+              className={`w-full p-3 rounded-md ${inputBgClass} ${textColorClass} border ${inputBorderClass} ${inputPlaceholderClass} focus:ring-2 ${focusRingClass} focus:border-${themeColor}-500 outline-none text-sm sm:text-base`}
               placeholder={texts.apiKeyPlaceholder}
               aria-describedby={error ? "api-key-error" : undefined}
             />
           </div>
           {error && (
-            <p id="api-key-error" className="text-red-400 text-xs sm:text-sm bg-red-900/30 p-2 rounded-md">
+            <p id="api-key-error" className={`text-xs sm:text-sm p-2 rounded-md ${currentBgIsLight ? 'text-red-600 bg-red-100' :'text-red-400 bg-red-900/30'}`}>
               {error}
             </p>
           )}
@@ -65,13 +73,13 @@ const WelcomeSetupScreen: React.FC<WelcomeSetupScreenProps> = ({ onApiKeySubmit,
             type="submit"
             className={`w-full py-3 px-4 rounded-md text-white font-semibold transition-colors duration-150 
                         ${buttonBgClass} hover:${buttonHoverBgClass} 
-                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-700 focus:${getThemeColorClass(themeColor, 'ring', '400')} 
+                        focus:outline-none focus:ring-2 focus:ring-offset-2 ${currentBgIsLight ? 'focus:ring-offset-white' : 'focus:ring-offset-slate-700'} focus:${getThemeColorClass(themeColor, 'ring', '400')} 
                         disabled:opacity-60 disabled:cursor-not-allowed text-sm sm:text-base`}
           >
             {texts.saveAndContinue}
           </button>
         </form>
-        <p className="text-xs text-slate-400 mt-6">
+        <p className={`text-xs ${smallSubTextColorClass} mt-6`}>
           You can change this later in the main application settings.
         </p>
       </div>

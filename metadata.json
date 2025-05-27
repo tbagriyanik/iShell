@@ -1,5 +1,6 @@
 {
   "name": "iShell Desktop",
   "description": "A web-based desktop environment simulator with customizable settings, draggable windows, and context menus, showcasing UI/UX principles with React and Tailwind CSS.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "prompt": ""
 }

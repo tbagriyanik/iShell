@@ -28,15 +28,16 @@ export enum BackgroundColorOption {
 }
 
 export enum FontFamilyOption {
+  Inter = 'Inter',
+  Roboto = 'Roboto',
+  OpenSans = 'Open Sans',
+  Lato = 'Lato',
+  Montserrat = 'Montserrat',
   Verdana = 'Verdana',
   Arial = 'Arial',
-  TimesNewRoman = 'Times New Roman',
-  CourierNew = 'Courier New',
-  Georgia = 'Georgia',
   Tahoma = 'Tahoma',
-  Inter = 'Inter', 
-  Roboto = 'Roboto', 
-  ComicSans = 'Comic Sans MS', 
+  Georgia = 'Georgia',
+  CourierNew = 'Courier New',
 }
 
 export enum IconSizeOption {
@@ -138,6 +139,8 @@ export interface ContextMenuState {
   y: number;
   items: ContextMenuItem[];
   targetId?: string;
+  currentBgIsLight: boolean; // Added for theming context menu
+  themeColor: ThemeColorOption; // Added for theming context menu hover
 }
 
 export interface ColorPaletteEntry {
@@ -175,12 +178,14 @@ export interface ConfirmationModalProps {
   themeColor: ThemeColorOption;
   onConfirm: () => void;
   onClose: () => void;
+  currentBgIsLight: boolean;
 }
 
 export interface WelcomeSetupScreenProps {
   onApiKeySubmit: (apiKey: string) => void;
   themeColor: ThemeColorOption;
   texts: Pick<UITranslation, 'welcomeTitle' | 'welcomeMessage' | 'apiKeyLabel' | 'apiKeyPlaceholder' | 'saveAndContinue'>;
+  currentBgIsLight: boolean;
 }
 
 export interface UITranslation {

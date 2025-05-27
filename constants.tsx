@@ -1,9 +1,10 @@
 import React from 'react';
 import { SettingsState, DesktopApp, ThemeColorOption, BackgroundColorOption, FontFamilyOption, IconSizeOption, LanguageOption, TimeFormatOption, ColorPaletteEntry, UITranslation, AppIconOption, IconArrangementOption, SettingsTabOption, StringKeys } from './types';
 import { 
-    CogIconComponent, PlusIcon, FolderOpenIcon, PencilIcon, TrashIcon, ArrowUturnLeftIcon, Bars3BottomLeftIcon,
+    EllipsisVerticalIconComponent, PlusIcon, FolderOpenIcon, PencilIcon, TrashIcon, ArrowUturnLeftIcon, Bars3BottomLeftIcon,
     PlaceholderAppIconComponent, SettingsAppIconFrame, NewAppPlaceholderIcon, 
     CalculatorIconComponent, DocumentTextIconComponent, PuzzlePieceIconComponent, PhotoIconComponent, WindowIconComponent,
+    EnvelopeIconComponent, CalendarDaysIconComponent, ChartBarIconComponent, // Added new icons
     ArrowsUpDownIcon, ArrowsLeftRightIcon, XMarkIcon as CloseIcon // For tab context menu
 } from './components/icons';
 
@@ -24,72 +25,22 @@ export const EXAMPLE_APP_PROMPTS: Record<string, {name: string, nameTr: string, 
     'calculator': {
         name: 'Calculator',
         nameTr: 'Hesap Makinesi',
-        prompt: `Create a fully functional calculator.
-Layout:
-- A display screen at the top (readonly input field or div).
-- Buttons for numbers 0-9.
-- Buttons for operators: +, -, *, /.
-- Button for decimal point: .
-- Button for equals: =.
-- Button for clear entry: CE (clears current entry).
-- Button for clear all: C (clears all, including memory).
-- Optional: Buttons for square root (√) and percentage (%).
-
-Functionality:
-- Basic arithmetic operations: addition, subtraction, multiplication, division.
-- Handle multiple operations sequentially (e.g., 5 + 3 * 2 = 11, following order of operations if simple, or left-to-right if complex order is too much).
-- Display current input and results on the screen.
-- Clear button (C) should reset the calculator.
-- CE should clear the last number entered.
-- Prevent division by zero (show "Error" or "Cannot divide by zero").
-- Handle decimal inputs and outputs correctly.
-- Clicking a number button appends it to the current input.
-- Clicking an operator button stores the operator and current number, preparing for the next number. If an operator is already pending, calculate the previous operation first.
-- Equals button (=) calculates the result of the current expression.
-- After a result is shown, if a number is pressed, it should start a new calculation. If an operator is pressed, it should use the result as the first operand.
-
-Styling:
-- Clean, modern, and user-friendly design.
-- Buttons should be clearly labeled and easy to click.
-- Display screen should be prominent.
-- Responsive layout (buttons adjust size for smaller views if possible).
-- The prompt used to generate this app should be visible as a comment in the HTML or a very small, non-intrusive note at the bottom of the app body. Example: <!-- AI Prompt: [the prompt text] --> or <p style="font-size:8px; color:grey; text-align:center; margin-top:10px;">Generated from: [the prompt text]</p>`,
+        prompt: `HTML/CSS/JS calculator: Numbers 0-9. Ops: +, -, *, /. Equals button. Clear button. Display for input/results. Basic arithmetic. Self-contained.
+<!-- AI Prompt: Basic arithmetic (+, -, *, /), numbers (0-9), equals, clear. Display input & results. -->`,
         iconId: 'CalculatorIcon',
     },
     'notepad': {
         name: 'Notepad',
         nameTr: 'Not Defteri',
-        prompt: `Create a simple but functional notepad application.
-Features:
-- A large textarea for users to type and edit text.
-- Display character count and word count below the textarea, updating in real-time as the user types.
-- Basic toolbar with buttons for:
-    - Bold (wraps selected text with <strong> or applies bold style)
-    - Italic (wraps selected text with <em> or applies italic style)
-    - Underline (wraps selected text with <u> or applies underline style)
-    - Clear All (clears the textarea content after confirmation).
-- The content should be editable and selectable.
-- Ensure the layout is clean and the textarea is the primary focus.
-- The prompt used to generate this app should be visible as a comment in the HTML or a very small, non-intrusive note at the bottom of the app body. Example: <!-- AI Prompt: [the prompt text] --> or <p style="font-size:8px; color:grey; text-align:center; margin-top:10px;">Generated from: [the prompt text]</p>`,
+        prompt: `HTML/CSS/JS notepad: Textarea. Live character/word count below textarea. 'Clear All' button. Self-contained.
+<!-- AI Prompt: Textarea, live char/word count, 'Clear All' button. -->`,
         iconId: 'DocumentTextIcon',
     },
     'musicplayer': {
-        name: 'Music Player',
-        nameTr: 'Müzik Çalar',
-        prompt: `Create a simple visual placeholder for a music player UI. No actual audio playback is required.
-Elements:
-- Display "Music Player" as a title.
-- Show a placeholder for album art (e.g., a generic musical note icon or a grey square).
-- Display placeholder text for "Song Title" and "Artist Name" below the album art.
-- Include visual buttons (non-functional) for:
-    - Play (icon: triangle pointing right)
-    - Pause (icon: two vertical bars)
-    - Previous (icon: triangle pointing left with a vertical bar)
-    - Next (icon: triangle pointing right with a vertical bar)
-- Include a visual (non-functional) progress bar for the song.
-- Include a visual (non-functional) volume slider.
-- Style it to look like a modern music player interface.
-- The prompt used to generate this app should be visible as a comment in the HTML or a very small, non-intrusive note at the bottom of the app body. Example: <!-- AI Prompt: [the prompt text] --> or <p style="font-size:8px; color:grey; text-align:center; margin-top:10px;">Generated from: [the prompt text]</p>`,
+        name: 'Music Player (Visual)',
+        nameTr: 'Müzik Çalar (Görsel)',
+        prompt: `HTML/CSS ONLY visual music player: Album art placeholder (square with music icon). Text: "Song Title", "Artist Name". Non-functional buttons: Play, Pause, Prev, Next. Non-functional song progress bar. Simple interface. Self-contained. No JS.
+<!-- AI Prompt: Visual mockup: album art placeholder, song/artist text, non-functional play/pause/skip buttons, progress bar. HTML/CSS only. -->`,
         iconId: 'PuzzlePieceIcon',
     }
 };
@@ -125,13 +76,14 @@ export const DESKTOP_BACKGROUND_PALETTE: ColorPaletteEntry[] = [
 export const FONT_FAMILY_OPTIONS: { name: string, value: FontFamilyOption, tailwindClass: string, style: React.CSSProperties }[] = [
   { name: 'Inter', value: FontFamilyOption.Inter, tailwindClass: 'font-sans', style: {fontFamily: 'Inter, sans-serif'} },
   { name: 'Roboto', value: FontFamilyOption.Roboto, tailwindClass: 'font-sans', style: {fontFamily: 'Roboto, sans-serif'} },
+  { name: 'Open Sans', value: FontFamilyOption.OpenSans, tailwindClass: 'font-sans', style: {fontFamily: '"Open Sans", sans-serif'} },
+  { name: 'Lato', value: FontFamilyOption.Lato, tailwindClass: 'font-sans', style: {fontFamily: 'Lato, sans-serif'} },
+  { name: 'Montserrat', value: FontFamilyOption.Montserrat, tailwindClass: 'font-sans', style: {fontFamily: 'Montserrat, sans-serif'} },
   { name: 'Verdana', value: FontFamilyOption.Verdana, tailwindClass: 'font-sans', style: {fontFamily: 'Verdana, sans-serif'} },
   { name: 'Arial', value: FontFamilyOption.Arial, tailwindClass: 'font-sans', style: {fontFamily: 'Arial, sans-serif'} },
   { name: 'Tahoma', value: FontFamilyOption.Tahoma, tailwindClass: 'font-sans', style: {fontFamily: 'Tahoma, sans-serif'} },
   { name: 'Georgia', value: FontFamilyOption.Georgia, tailwindClass: 'font-serif', style: {fontFamily: 'Georgia, serif'} },
-  { name: 'Times New Roman', value: FontFamilyOption.TimesNewRoman, tailwindClass: 'font-serif', style: {fontFamily: '"Times New Roman", serif'} },
   { name: 'Courier New', value: FontFamilyOption.CourierNew, tailwindClass: 'font-mono', style: {fontFamily: '"Courier New", monospace'} },
-  { name: 'Comic Sans MS', value: FontFamilyOption.ComicSans, tailwindClass: 'font-sans', style: {fontFamily: '"Comic Sans MS", cursive'} },
 ];
 
 export const ICON_SIZE_OPTIONS: { name: string, nameTr: string, value: IconSizeOption, appIconClass: string, textClass: string, desktopIconContainerClass: string }[] = [
@@ -158,7 +110,7 @@ export const TIME_FORMAT_OPTIONS: { name: string, value: TimeFormatOption }[] = 
 
 // Map of Icon IDs to their raw SVG components (unframed)
 export const RAW_APP_ICON_COMPONENTS: Record<string, React.FC<{className?: string}>> = {
-    'SettingsAppIcon': CogIconComponent,
+    'SettingsAppIcon': EllipsisVerticalIconComponent,
     'PlaceholderAppIcon': PlaceholderAppIconComponent,
     'CalculatorIcon': CalculatorIconComponent,
     'DocumentTextIcon': DocumentTextIconComponent,
@@ -166,11 +118,14 @@ export const RAW_APP_ICON_COMPONENTS: Record<string, React.FC<{className?: strin
     'PhotoIcon': PhotoIconComponent,
     'WindowIcon': WindowIconComponent,
     'NewAppPlaceholderIcon': PlusIcon, 
+    'EnvelopeIcon': EnvelopeIconComponent,
+    'CalendarDaysIcon': CalendarDaysIconComponent,
+    'ChartBarIcon': ChartBarIconComponent,
 };
 
 // Framed components for use on Desktop and Window Title bars
 export const APP_ICON_COMPONENT_MAP: Record<string, React.FC<{className?: string, iconSizeClass?: string}>> = {
-    'SettingsAppIcon': ({className, iconSizeClass}) => <SettingsAppIconFrame className={className} bgColorClass="bg-gray-500"><CogIconComponent className={iconSizeClass || "w-3/5 h-3/5"}/></SettingsAppIconFrame>,
+    'SettingsAppIcon': ({className, iconSizeClass}) => <SettingsAppIconFrame className={className} bgColorClass="bg-gray-500"><EllipsisVerticalIconComponent className={iconSizeClass || "w-3/5 h-3/5"}/></SettingsAppIconFrame>,
     'PlaceholderAppIcon': ({className, iconSizeClass}) => <SettingsAppIconFrame className={className} bgColorClass="bg-purple-500"><PlaceholderAppIconComponent className={iconSizeClass || "w-3/5 h-3/5"}/></SettingsAppIconFrame>,
     'NewAppPlaceholderIcon': ({className, iconSizeClass}) => <SettingsAppIconFrame className={className} bgColorClass="bg-green-500"><PlusIcon className={iconSizeClass || "w-3/5 h-3/5"}/></SettingsAppIconFrame>,
     'CalculatorIcon': ({className, iconSizeClass}) => <SettingsAppIconFrame className={className} bgColorClass="bg-yellow-500"><CalculatorIconComponent className={iconSizeClass || "w-3/5 h-3/5"}/></SettingsAppIconFrame>,
@@ -178,6 +133,9 @@ export const APP_ICON_COMPONENT_MAP: Record<string, React.FC<{className?: string
     'PuzzlePieceIcon': ({className, iconSizeClass}) => <SettingsAppIconFrame className={className} bgColorClass="bg-red-500"><PuzzlePieceIconComponent className={iconSizeClass || "w-3/5 h-3/5"}/></SettingsAppIconFrame>,
     'PhotoIcon': ({className, iconSizeClass}) => <SettingsAppIconFrame className={className} bgColorClass="bg-pink-500"><PhotoIconComponent className={iconSizeClass || "w-3/5 h-3/5"}/></SettingsAppIconFrame>,
     'WindowIcon': ({className, iconSizeClass}) => <SettingsAppIconFrame className={className} bgColorClass="bg-teal-500"><WindowIconComponent className={iconSizeClass || "w-3/5 h-3/5"}/></SettingsAppIconFrame>,
+    'EnvelopeIcon': ({className, iconSizeClass}) => <SettingsAppIconFrame className={className} bgColorClass="bg-sky-500"><EnvelopeIconComponent className={iconSizeClass || "w-3/5 h-3/5"}/></SettingsAppIconFrame>,
+    'CalendarDaysIcon': ({className, iconSizeClass}) => <SettingsAppIconFrame className={className} bgColorClass="bg-rose-500"><CalendarDaysIconComponent className={iconSizeClass || "w-3/5 h-3/5"}/></SettingsAppIconFrame>,
+    'ChartBarIcon': ({className, iconSizeClass}) => <SettingsAppIconFrame className={className} bgColorClass="bg-lime-500"><ChartBarIconComponent className={iconSizeClass || "w-3/5 h-3/5"}/></SettingsAppIconFrame>,
     'DefaultAppIcon': ({className, iconSizeClass}) => <SettingsAppIconFrame className={className} bgColorClass="bg-gray-400"><PlaceholderAppIconComponent className={iconSizeClass || "w-3/5 h-3/5"}/></SettingsAppIconFrame>,
 };
 
@@ -190,10 +148,13 @@ export const AVAILABLE_APP_ICONS: AppIconOption[] = [
     { id: 'PlaceholderAppIcon', name: 'Generic', rawIconComponent: RAW_APP_ICON_COMPONENTS['PlaceholderAppIcon'], frameColorClass: 'bg-purple-500' },
     { id: 'CalculatorIcon', name: 'Calc', rawIconComponent: RAW_APP_ICON_COMPONENTS['CalculatorIcon'], frameColorClass: 'bg-yellow-500' },
     { id: 'DocumentTextIcon', name: 'Doc', rawIconComponent: RAW_APP_ICON_COMPONENTS['DocumentTextIcon'], frameColorClass: 'bg-blue-500' },
-    { id: 'PuzzlePieceIcon', name: 'Game/Music', rawIconComponent: RAW_APP_ICON_COMPONENTS['PuzzlePieceIcon'], frameColorClass: 'bg-red-500' }, // Generic enough for music too
+    { id: 'PuzzlePieceIcon', name: 'Game/Fun', rawIconComponent: RAW_APP_ICON_COMPONENTS['PuzzlePieceIcon'], frameColorClass: 'bg-red-500' },
     { id: 'PhotoIcon', name: 'Image', rawIconComponent: RAW_APP_ICON_COMPONENTS['PhotoIcon'], frameColorClass: 'bg-pink-500' },
     { id: 'WindowIcon', name: 'Utility', rawIconComponent: RAW_APP_ICON_COMPONENTS['WindowIcon'], frameColorClass: 'bg-teal-500' },
     { id: 'NewAppPlaceholderIcon', name: 'New', rawIconComponent: RAW_APP_ICON_COMPONENTS['NewAppPlaceholderIcon'], frameColorClass: 'bg-green-500' },
+    { id: 'EnvelopeIcon', name: 'Mail', rawIconComponent: RAW_APP_ICON_COMPONENTS['EnvelopeIcon'], frameColorClass: 'bg-sky-500' },
+    { id: 'CalendarDaysIcon', name: 'Calendar', rawIconComponent: RAW_APP_ICON_COMPONENTS['CalendarDaysIcon'], frameColorClass: 'bg-rose-500' },
+    { id: 'ChartBarIcon', name: 'Chart', rawIconComponent: RAW_APP_ICON_COMPONENTS['ChartBarIcon'], frameColorClass: 'bg-lime-500' },
 ];
 
 
@@ -407,11 +368,13 @@ export const LOCALSTORAGE_WINDOWS_KEY = 'iShellWindows_v1';
 export const LOCALSTORAGE_INITIAL_APPS_SET_KEY = 'iShellInitialAppsSet_v2'; // Incremented due to prompt changes & generation logic for examples
 export const SYSTEM_INSTRUCTION_FOR_APP_GENERATION = (appName: string, userPrompt: string, fontFamily: string, themeHexColor: string) => `You are an expert web developer. Your task is to generate complete, self-contained, single-page web applications based on user prompts.
 The output MUST be only the raw HTML code, starting with <!DOCTYPE html> and ending with </html>.
-It must include a <head> with a <title>${appName}</title>, a <style> tag for all CSS, and a <body> with content and a <script> tag for all JS (if JS is needed for functionality).
+It must include a <head> with a <title>${appName}</title>, a <style> tag for all CSS, and a <body> with content and a <script> tag for all JS (if JS is needed for functionality described in the prompt).
 Do not include any explanations, markdown code fences (\`\`\`html ... \`\`\`), or any text outside the HTML structure.
 The application should be functional and try to match the user's description.
 Default body styling should be: body { font-family: ${fontFamily || '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'}; margin: 0; padding: 15px; background-color: #f0f2f5; color: #1f2937; display: flex; flex-direction: column; align-items: center; min-height: calc(100vh - 30px); box-sizing: border-box; }
 Buttons should be styled: button { padding: 10px 15px; margin: 5px; border: none; border-radius: 6px; cursor: pointer; background-color: #${themeHexColor}; color: white; font-size: 1em; transition: background-color 0.2s ease; } button:hover { background-color: #${themeHexColor}DD; }
-Inputs should be styled: input, textarea, select { padding: 10px; margin: 5px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1em; box-sizing: border-box; }
+Inputs, textareas, and selects should be styled: input, textarea, select { padding: 10px; margin: 5px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1em; box-sizing: border-box; }
+If the user asks for a very simple app, the HTML should be very simple and directly reflect that.
+If the prompt implies interactivity (e.g., "live character count", "calculator operations"), JavaScript MUST be included within the single HTML file to achieve this functionality.
 At the very end of the HTML body, include the AI prompt that was used to generate this app inside an HTML comment. Example: <!-- AI Prompt: ${userPrompt.replace(/-->/g, '--&gt;')} -->
 The application name is "${appName}". The user's core functionality request is: "${userPrompt}".`;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { SettingsState, WindowState, DesktopApp, TimeFormatOption, SearchResultItem, ActionSearchResult } from '../types';
+import { SettingsState, WindowState, DesktopApp, TimeFormatOption, SearchResultItem, ActionSearchResult, LanguageOption } from '../types';
 import { UI_TEXTS, getThemeColorClass, DESKTOP_BACKGROUND_PALETTE, APP_ICON_COMPONENT_MAP, TAB_CONTEXT_MENU_ITEMS, RAW_APP_ICON_COMPONENTS } from '../constants';
-import { SearchIcon, PlusIcon, CogIconComponent as CogIcon } from './icons';
+import { SearchIcon, PlusIcon, EllipsisVerticalIconComponent as SettingsMenuIcon } from './icons';
 
 interface TopBarProps {
   settings: SettingsState;
@@ -35,17 +35,25 @@ const Clock: React.FC<{
       second: showSeconds ? '2-digit' : undefined,
       hour12: timeFormat === TimeFormatOption.TwelveHour,
     };
-    return currentTime.toLocaleTimeString(language === 'Turkish' ? 'tr-TR' : 'en-US', options);
+    return currentTime.toLocaleTimeString(language === LanguageOption.Turkish ? 'tr-TR' : 'en-US', options);
   };
   
   const formatDate = () => {
     if (!showDate) return null;
-    const options: Intl.DateTimeFormatOptions = {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    };
-     return currentTime.toLocaleDateString(language === 'Turkish' ? 'tr-TR' : 'en-US', options);
+    
+    if (language === LanguageOption.Turkish) {
+        const day = currentTime.getDate().toString().padStart(2, '0');
+        const month = (currentTime.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed
+        const year = currentTime.getFullYear();
+        return `${day}/${month}/${year}`;
+    } else {
+        const options: Intl.DateTimeFormatOptions = {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        };
+        return currentTime.toLocaleDateString('en-US', options); // Default to US format for English
+    }
   };
 
   const dateString = formatDate();
@@ -191,8 +199,9 @@ const TopBar: React.FC<TopBarProps> = ({ settings, openWindows, desktopApps, onF
         </div>
       </div>
 
-      <div className="flex-grow flex justify-center items-center overflow-hidden mx-1">
-          <div className="flex items-center space-x-0.5 sm:space-x-1 overflow-x-auto scrollbar-hide max-w-full sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg">
+      {/* Middle group: Tabs */}
+      <div className="flex-grow flex items-center overflow-hidden mx-1 sm:mx-2">
+          <div className="flex items-center space-x-0.5 sm:space-x-1 overflow-x-auto scrollbar-hide h-full w-full"> {/* Use w-full here */}
             {openWindows.filter(w => !w.isMinimized).map(win => {
                 const appForTab = desktopApps.find(da => da.id === win.appId);
                 const TabIcon = appForTab ? (APP_ICON_COMPONENT_MAP[appForTab.iconId] || APP_ICON_COMPONENT_MAP['DefaultAppIcon']) : null;
@@ -201,7 +210,7 @@ const TopBar: React.FC<TopBarProps> = ({ settings, openWindows, desktopApps, onF
                 key={win.id}
                 onClick={() => onFocusWindow(win.id)}
                 onContextMenu={(e) => { e.preventDefault(); onTabContextMenu(e, win.id);}}
-                className={`flex items-center space-x-1 sm:space-x-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-t-md text-xs transition-colors shrink-0 
+                className={`flex items-center space-x-1 sm:space-x-1.5 px-2 sm:px-2.5 py-1 h-[calc(100%-6px)] rounded-t-md text-xs transition-colors shrink-0 
                             ${win.isActive ? `${activeTabClass} text-white` : `${inactiveTabClass} ${textColorClass}`}`}
                 title={win.title}
               >
@@ -219,7 +228,7 @@ const TopBar: React.FC<TopBarProps> = ({ settings, openWindows, desktopApps, onF
            aria-label={texts.settingsTitle}
            title={texts.settingsTitle}
         >
-            <CogIcon className="w-4 h-4 sm:w-5 sm:h-5"/>
+            <SettingsMenuIcon className="w-4 h-4 sm:w-5 sm:h-5"/>
         </button>
         <Clock 
             timeFormat={settings.timeFormat} 
