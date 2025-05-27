@@ -53,3 +53,5 @@ This application is designed to run directly in a modern web browser without nee
 *   The application state (settings, user-created apps, window positions) is persisted in the browser's LocalStorage.
 *   Error handling for API calls and unexpected responses is implemented to provide a more robust user experience.
 *   The UI aims for responsiveness and accessibility, using ARIA attributes where appropriate.
+
+![Test](https://github.com/tbagriyanik/iShell/blob/main/Ekran%20g%C3%B6r%C3%BCnt%C3%BCs%C3%BC%202025-05-27%20230412.png)
